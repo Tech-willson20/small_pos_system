@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--light-green) 100%);
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, white 35px, white 70px);
+        }
+        
+        /* Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .logo-icon i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .logo-text h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid white;
+        }
+        
+        .btn-login {
+            background: transparent;
+            color: white;
+        }
+        
+        .btn-login:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .btn-signup {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Hero Content */
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            margin-top: 50px;
+        }
+        
+        .hero-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            max-width: 600px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn-hero {
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary-hero {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-primary-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary-hero {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary-hero:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        /* Phone Mockup */
+        .phone-mockup {
+            margin-top: 50px;
+            position: relative;
+        }
+        
+        .phone-frame {
+            width: 280px;
+            height: 550px;
+            background: white;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--light-green));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .phone-content {
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .phone-content i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(11, 102, 35, 0.2);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon i {
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .feature-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .feature-text {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--light-green));
+            text-align: center;
+        }
+        
+        .cta-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .cta-text {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .btn-cta {
+            background: white;
+            color: var(--primary-color);
+            padding: 15px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .phone-frame {
+                width: 240px;
+                height: 470px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-nav {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-pattern"></div>
+        
+        <!-- Navigation -->
+        <nav class="top-nav">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-cash-register"></i>
+                </div>
+                <div class="logo-text">
+                    <h2>POS System</h2>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="{% url 'login' %}" class="btn-nav btn-login">Login</a>
+                <a href="{% url 'signup' %}" class="btn-nav btn-signup">Sign Up</a>
+            </div>
+        </nav>
+        
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1 class="hero-title">Manage Your Business<br>Anywhere, Anytime</h1>
+            <p class="hero-subtitle">
+                A powerful mobile POS system designed for small businesses. 
+                Track sales, manage inventory, and grow your business effortlessly.
+            </p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-rocket"></i> Get Started Free
+                </a>
+                <a href="#features" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-play-circle"></i> Learn More
+                </a>
+            </div>
+            
+            <!-- Phone Mockup -->
+            <div class="phone-mockup">
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="phone-content">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h3>Mobile First</h3>
+                            <p>Works on all devices</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <h2 class="section-title">Everything You Need</h2>
+        <p class="section-subtitle">
+            Powerful features to help you run your business smoothly
+        </p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3 class="feature-title">Easy Sales</h3>
+                <p class="feature-text">
+                    Record transactions quickly with our intuitive mobile interface
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3 class="feature-title">Inventory Control</h3>
+                <p class="feature-text">
+                    Track stock levels and get alerts when items run low
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h3 class="feature-title">Digital Receipts</h3>
+                <p class="feature-text">
+                    Send receipts via SMS, WhatsApp, Email or print as PDF
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Sales Reports</h3>
+                <p class="feature-text">
+                    View real-time analytics and export detailed reports
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Team Management</h3>
+                <p class="feature-text">
+                    Add employees and control their access permissions
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Mobile Money</h3>
+                <p class="feature-text">
+                    Accept MTN, Airtel, and Vodafone mobile money payments
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-text">
+            Join hundreds of businesses already using our POS system
+        </p>
+        <a href="{% url 'signup' %}" class="btn-cta">
+            <i class="fas fa-user-plus"></i> Create Free Account
+        </a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Support</a>
+            <a href="#">Contact</a>
+        </div>
+        <p>&copy; 2024 POS System. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

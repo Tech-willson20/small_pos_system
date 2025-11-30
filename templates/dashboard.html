@@ -1,0 +1,622 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .welcome-section h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .welcome-section p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-notification {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-profile {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 20px;
+            margin-top: -30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(11, 102, 35, 0.1);
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .stat-icon i {
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        .stat-change.positive {
+            color: var(--primary-color);
+        }
+        
+        .quick-actions {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .action-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(11, 102, 35, 0.3);
+        }
+        
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-icon {
+            background: white;
+        }
+        
+        .action-icon i {
+            font-size: 1.4rem;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-icon i {
+            color: var(--primary-color);
+        }
+        
+        .action-label {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-label {
+            color: white;
+        }
+        
+        .recent-section {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .sales-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .sales-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .sale-id {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .sale-time {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .sale-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid rgba(11, 102, 35, 0.2);
+        }
+        
+        .sale-info {
+            flex: 1;
+        }
+        
+        .sale-customer {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+        }
+        
+        .sale-items {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .sale-amount {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .view-all-btn {
+            display: block;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .alerts-section {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .alert-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .alert-icon i {
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        
+        .alert-text {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        .content-wrapper {
+            padding-bottom: 70px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .content-wrapper {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <div class="welcome-section">
+                <h2>👋 Hello, {{ user.first_name|default:"Owner" }}</h2>
+                <p>{{ current_date|date:"l, F d, Y" }}</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">{{ notification_count|default:"3" }}</span>
+                </button>
+                <button class="btn-profile" onclick="window.location.href='{% url 'profile' %}'">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-label">Today's Sales</div>
+                <div class="stat-value">GH₵ {{ today_sales|default:"0.00" }}</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> {{ sales_change|default:"12" }}%
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-label">Transactions</div>
+                <div class="stat-value">{{ today_transactions|default:"0" }}</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> {{ trans_change|default:"8" }}%
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-label">Products</div>
+                <div class="stat-value">{{ total_products|default:"0" }}</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-box-open"></i> {{ in_stock|default:"0" }} in stock
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-label">Customers</div>
+                <div class="stat-value">{{ total_customers|default:"0" }}</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-user-plus"></i> {{ new_customers|default:"0" }} new
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3 class="section-title">Quick Actions</h3>
+            <div class="action-grid">
+                <a href="{% url 'new_sale' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="action-label">New Sale</div>
+                </a>
+                
+                <a href="{% url 'inventory' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="action-label">Inventory</div>
+                </a>
+                
+                <a href="{% url 'customers' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="action-label">Customers</div>
+                </a>
+                
+                <a href="{% url 'reports' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-label">Reports</div>
+                </a>
+                
+                <a href="{% url 'users' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div class="action-label">Employees</div>
+                </a>
+                
+                <a href="{% url 'settings' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="action-label">Settings</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Sales -->
+        <div class="recent-section">
+            <h3 class="section-title">Recent Sales</h3>
+            {% if recent_sales %}
+                {% for sale in recent_sales %}
+                <div class="sales-card">
+                    <div class="sales-header">
+                        <span class="sale-id">#{{ sale.id }}</span>
+                        <span class="sale-time">
+                            <i class="fas fa-clock"></i> {{ sale.created_at|timesince }} ago
+                        </span>
+                    </div>
+                    <div class="sale-details">
+                        <div class="sale-info">
+                            <div class="sale-customer">
+                                <i class="fas fa-user"></i> {{ sale.customer_name|default:"Walk-in Customer" }}
+                            </div>
+                            <div class="sale-items">
+                                <i class="fas fa-shopping-bag"></i> {{ sale.items_count }} item(s)
+                            </div>
+                        </div>
+                        <div class="sale-amount">
+                            GH₵ {{ sale.total_amount }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <a href="{% url 'sales' %}" class="view-all-btn">
+                    <i class="fas fa-list"></i> View All Sales
+                </a>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <p>No sales recorded yet</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Alerts -->
+        <div class="alerts-section">
+            <h3 class="section-title">Alerts & Notifications</h3>
+            
+            <div class="alert-card">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">Low Stock Alert</div>
+                    <div class="alert-text">{{ low_stock_count|default:"5" }} products are running low on stock</div>
+                </div>
+            </div>
+            
+            <div class="alert-card">
+                <div class="alert-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">Sales Update</div>
+                    <div class="alert-text">You're {{ performance|default:"15" }}% ahead of yesterday's sales</div>
+                </div>
+            </div>
+            
+            <div class="alert-card">
+                <div class="alert-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">Pending Payments</div>
+                    <div class="alert-text">{{ pending_payments|default:"2" }} customers have outstanding credit</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'sales' %}" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sales</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'users' %}" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-refresh stats every 30 seconds
+        setInterval(function() {
+            // You can implement AJAX call here to refresh stats
+            console.log('Stats refreshed');
+        }, 30000);
+    </script>
+</body>
+</html>

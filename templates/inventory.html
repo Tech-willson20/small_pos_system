@@ -1,0 +1,698 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(11, 102, 35, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            text-align: center;
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        
+        .stat-icon i {
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .action-buttons {
+            margin: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-add-product {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            flex: 1;
+            box-shadow: 0 3px 10px rgba(11, 102, 35, 0.3);
+            cursor: pointer;
+        }
+        
+        .btn-add-product:hover {
+            background: var(--light-green);
+        }
+        
+        .btn-export {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .btn-export:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .filter-tabs {
+            margin: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .filter-tab {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .search-box {
+            margin: 15px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .product-card {
+            background: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            position: relative;
+        }
+        
+        .product-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .product-image i {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+        }
+        
+        .product-category {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stock-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .stock-high {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .stock-low {
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .stock-out {
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(11, 102, 35, 0.2);
+        }
+        
+        .detail-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .detail-label {
+            font-size: 0.75rem;
+            color: #666;
+            display: block;
+        }
+        
+        .detail-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit {
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-edit:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-restock {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-restock:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-delete:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            margin: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-color);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+            opacity: 0.6;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+            opacity: 1;
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        .content-wrapper {
+            padding-bottom: 70px;
+        }
+        
+        @media (min-width: 768px) {
+            .product-card {
+                margin: 15px auto;
+                max-width: 600px;
+            }
+            
+            .page-header, .action-buttons, .search-box, .filter-tabs, .stats-container {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-boxes"></i> Inventory
+            </a>
+            <button class="btn btn-sm btn-light" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-warehouse"></i> Inventory Management</h1>
+            <p class="text-muted mb-0">Manage your products and stock</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-value">{{ total_products|default:"0" }}</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-value">{{ total_stock|default:"0" }}</div>
+                <div class="stat-label">Total Stock</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value">{{ low_stock_count|default:"0" }}</div>
+                <div class="stat-label">Low Stock</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="stat-value">GH₵ {{ total_value|default:"0.00" }}</div>
+                <div class="stat-label">Total Value</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-add-product" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                <i class="fas fa-plus"></i> Add Product
+            </button>
+            <button class="btn-export">
+                <i class="fas fa-download"></i>
+            </button>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterProducts('all')">All Products</button>
+            <button class="filter-tab" onclick="filterProducts('in-stock')">In Stock</button>
+            <button class="filter-tab" onclick="filterProducts('low-stock')">Low Stock</button>
+            <button class="filter-tab" onclick="filterProducts('out-of-stock')">Out of Stock</button>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 Search products...">
+        </div>
+
+        <!-- Product Cards -->
+        {% if products %}
+            {% for product in products %}
+            <div class="product-card" data-stock-status="{{ product.stock_status }}">
+                <div class="stock-badge {% if product.stock > 20 %}stock-high{% elif product.stock > 0 %}stock-low{% else %}stock-out{% endif %}">
+                    {% if product.stock > 20 %}
+                        In Stock
+                    {% elif product.stock > 0 %}
+                        Low Stock
+                    {% else %}
+                        Out of Stock
+                    {% endif %}
+                </div>
+                
+                <div class="product-header">
+                    <div class="product-image">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="product-info">
+                        <p class="product-name">{{ product.name }}</p>
+                        <p class="product-category">
+                            <i class="fas fa-tag"></i> {{ product.category|default:"General" }}
+                        </p>
+                        <p class="product-price">GH₵ {{ product.price }}</p>
+                    </div>
+                </div>
+                
+                <div class="product-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Current Stock</span>
+                        <span class="detail-value">{{ product.stock }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Min Stock</span>
+                        <span class="detail-value">{{ product.min_stock|default:"10" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Sold</span>
+                        <span class="detail-value">{{ product.sold|default:"0" }}</span>
+                    </div>
+                </div>
+                
+                <div class="product-actions">
+                    <button class="btn-action btn-edit" onclick="editProduct({{ product.id }})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-action btn-restock" onclick="restockProduct({{ product.id }})">
+                        <i class="fas fa-plus-circle"></i> Restock
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deleteProduct({{ product.id }})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>No Products Yet</h3>
+                <p class="text-muted">Click the button above to add your first product</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: 2px solid var(--primary-color);">
+                    <h5 class="modal-title" style="color: var(--primary-color);">
+                        <i class="fas fa-plus-circle"></i> Add New Product
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm" method="POST" action="{% url 'add_product' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Product Name</label>
+                            <input type="text" class="form-control" name="name" style="border: 2px solid var(--primary-color);" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Category</label>
+                            <select class="form-select" name="category" style="border: 2px solid var(--primary-color);" required>
+                                <option value="">Select Category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Food">Food & Beverages</option>
+                                <option value="Beauty">Beauty & Health</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Price (GH₵)</label>
+                                    <input type="number" step="0.01" class="form-control" name="price" style="border: 2px solid var(--primary-color);" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Cost Price</label>
+                                    <input type="number" step="0.01" class="form-control" name="cost" style="border: 2px solid var(--primary-color);">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Stock Quantity</label>
+                                    <input type="number" class="form-control" name="stock" style="border: 2px solid var(--primary-color);" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Min Stock</label>
+                                    <input type="number" class="form-control" name="min_stock" value="10" style="border: 2px solid var(--primary-color);">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--primary-color); font-weight: 600;">Description (Optional)</label>
+                            <textarea class="form-control" name="description" rows="3" style="border: 2px solid var(--primary-color);"></textarea>
+                        </div>
+                        <button type="submit" class="btn w-100" style="background: var(--primary-color); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: 600;">
+                            <i class="fas fa-check"></i> Add Product
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'sales' %}" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sales</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item active">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'users' %}" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function editProduct(productId) {
+            window.location.href = `/inventory/edit/${productId}/`;
+        }
+        
+        function restockProduct(productId) {
+            const quantity = prompt('Enter quantity to add:');
+            if (quantity && quantity > 0) {
+                fetch(`/inventory/restock/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ quantity: quantity })
+                }).then(() => location.reload());
+            }
+        }
+        
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                fetch(`/inventory/delete/${productId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(() => location.reload());
+            }
+        }
+        
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.product-card').forEach(card => {
+                const name = card.querySelector('.product-name').textContent.toLowerCase();
+                const category = card.querySelector('.product-category').textContent.toLowerCase();
+                if (name.includes(searchTerm) || category.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Filter functionality
+        function filterProducts(filter) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter products
+            document.querySelectorAll('.product-card').forEach(card => {
+                const stockBadge = card.querySelector('.stock-badge');
+                const stockText = stockBadge.textContent.trim();
+                
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else if (filter === 'in-stock' && stockText === 'In Stock') {
+                    card.style.display = 'block';
+                } else if (filter === 'low-stock' && stockText === 'Low Stock') {
+                    card.style.display = 'block';
+                } else if (filter === 'out-of-stock' && stockText === 'Out of Stock') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

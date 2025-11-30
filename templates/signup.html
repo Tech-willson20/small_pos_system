@@ -1,0 +1,490 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .signup-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(11, 102, 35, 0.3);
+        }
+        
+        .logo-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .logo-text p {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .signup-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(11, 102, 35, 0.1);
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .signup-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .signup-header p {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-label {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+            outline: none;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+        
+        .input-icon .form-control {
+            padding-left: 45px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .form-select {
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 12px 45px 12px 45px;
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .form-select:focus {
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+            outline: none;
+        }
+        
+        .terms-check {
+            margin-bottom: 20px;
+        }
+        
+        .form-check-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .form-check-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .btn-signup {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-signup:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(11, 102, 35, 0.3);
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-color);
+            opacity: 0.2;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: #666;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            border: 2px solid var(--primary-color);
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s;
+            width: 0%;
+        }
+        
+        @media (max-width: 480px) {
+            .signup-card {
+                padding: 25px 20px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-cash-register"></i>
+            </div>
+            <div class="logo-text">
+                <h1>POS System</h1>
+                <p>Start managing your business</p>
+            </div>
+        </div>
+        
+        <!-- Signup Card -->
+        <div class="signup-card">
+            <div class="signup-header">
+                <h2>Create Account</h2>
+                <p>Sign up to get started</p>
+            </div>
+            
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i> {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="POST" action="{% url 'signup' %}" id="signupForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i> First Name
+                            </label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" class="form-control" name="first_name" placeholder="First name" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i> Last Name
+                            </label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" class="form-control" name="last_name" placeholder="Last name" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-store"></i> Business Name
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-store"></i>
+                        <input type="text" class="form-control" name="business_name" placeholder="Your business name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-control" name="phone" placeholder="0240000000" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-control" name="email" placeholder="your@email.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Location/Address
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" class="form-control" name="location" placeholder="Business location" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Create password" required minlength="8">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
+                            <i class="fas fa-eye" id="toggleIcon1"></i>
+                        </button>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthBar"></div>
+                    </div>
+                    <small class="password-strength" id="strengthText"></small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', 'toggleIcon2')">
+                            <i class="fas fa-eye" id="toggleIcon2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="terms-check">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                        <label class="form-check-label" for="terms">
+                            I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-signup">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="login-link">
+                Already have an account? <a href="{% url 'login' %}">Login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[a-z]+/)) strength += 25;
+            if (password.match(/[A-Z]+/)) strength += 25;
+            if (password.match(/[0-9]+/) || password.match(/[^a-zA-Z0-9]+/)) strength += 25;
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength <= 25) {
+                strengthBar.style.background = '#ff4444';
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#ff4444';
+            } else if (strength <= 50) {
+                strengthBar.style.background = '#ff9800';
+                strengthText.textContent = 'Fair password';
+                strengthText.style.color = '#ff9800';
+            } else if (strength <= 75) {
+                strengthBar.style.background = '#0D8030';
+                strengthText.textContent = 'Good password';
+                strengthText.style.color = '#0D8030';
+            } else {
+                strengthBar.style.background = '#0B6623';
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#0B6623';
+            }
+        });
+        
+        // Form validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
