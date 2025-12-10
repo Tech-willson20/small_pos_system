@@ -118,11 +118,11 @@
             <div class="row g-3 align-items-end">
                 <div class="col-md-4 col-12">
                     <label class="form-label fw-bold text-success">From Date</label>
-                    <input type="date" class="form-control" name="from_date">
+                    <input type="date" class="form-control" name="from_date" value="{{ from_date }}">
                 </div>
                 <div class="col-md-4 col-12">
                     <label class="form-label fw-bold text-success">To Date</label>
-                    <input type="date" class="form-control" name="to_date">
+                    <input type="date" class="form-control" name="to_date" value="{{ to_date }}">
                 </div>
                 <div class="col-md-4 col-12">
                     <button class="btn btn-success w-100" type="submit">
@@ -138,19 +138,19 @@
         <div class="col-md-4 col-12">
             <div class="card-summary">
                 <p class="summary-label">Total Sales</p>
-                <p class="summary-value">$12,540.00</p>
+                <p class="summary-value">GH₵{{ total_sales|floatformat:2 }}</p>
             </div>
         </div>
         <div class="col-md-4 col-12">
             <div class="card-summary">
                 <p class="summary-label">Total Transactions</p>
-                <p class="summary-value">324</p>
+                <p class="summary-value">{{ receipt_count }}</p>
             </div>
         </div>
         <div class="col-md-4 col-12">
             <div class="card-summary">
                 <p class="summary-label">Top Product</p>
-                <p class="summary-value">Chicken Fillet</p>
+                <p class="summary-value">{{ top_product_name }}</p>
             </div>
         </div>
     </div>
@@ -160,22 +160,14 @@
         <div class="col-lg-6 col-md-12">
             <div class="top-products-card">
                 <h5 class="fw-bold text-success mb-3"><i class="fas fa-crown"></i> Top Selling Products</h5>
+                {% for product in top_products %}
                 <div class="product-row">
-                    <span>Chicken Fillet</span>
-                    <span class="fw-bold text-success">145 sold</span>
+                    <span>{{ product.product__name }}</span>
+                    <span class="fw-bold text-success">{{ product.total_quantity }} sold</span>
                 </div>
-                <div class="product-row">
-                    <span>Rice Meal</span>
-                    <span class="fw-bold text-success">98 sold</span>
-                </div>
-                <div class="product-row">
-                    <span>Burger Steak</span>
-                    <span class="fw-bold text-success">74 sold</span>
-                </div>
-                <div class="product-row">
-                    <span>Softdrinks</span>
-                    <span class="fw-bold text-success">61 sold</span>
-                </div>
+                {% empty %}
+                <p class="text-muted">No sales data available</p>
+                {% endfor %}
             </div>
         </div>
 
@@ -218,27 +210,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for transaction in transactions %}
                     <tr>
-                        <td>#000123</td>
-                        <td>2025-01-18</td>
-                        <td>4</td>
-                        <td>$420.00</td>
-                        <td>Mary</td>
+                        <td>{{ transaction.receipt_no }}</td>
+                        <td>{{ transaction.date }}</td>
+                        <td>{{ transaction.items_count }}</td>
+                        <td>GH₵{{ transaction.total|floatformat:2 }}</td>
+                        <td>{{ transaction.staff }}</td>
                     </tr>
+                    {% empty %}
                     <tr>
-                        <td>#000124</td>
-                        <td>2025-01-18</td>
-                        <td>2</td>
-                        <td>$180.00</td>
-                        <td>James</td>
+                        <td colspan="5" class="text-center text-muted">No transactions found</td>
                     </tr>
-                    <tr>
-                        <td>#000125</td>
-                        <td>2025-01-18</td>
-                        <td>6</td>
-                        <td>$645.00</td>
-                        <td>Mary</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -252,11 +236,11 @@
         const categoryPieChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: ['Food', 'Beverages', 'Snacks', 'Others'],
+                labels: {{ category_labels|safe }},
                 datasets: [{
                     label: 'Product Categories',
-                    data: [145, 61, 74, 20],
-                    backgroundColor: ['#0B6623','#0D8030','#85bb65','#c8e6c9'],
+                    data: {{ category_values|safe }},
+                    backgroundColor: ['#0B6623','#0D8030','#85bb65','#c8e6c9','#4CAF50','#81C784'],
                     borderColor: '#fff',
                     borderWidth: 2
                 }]
@@ -272,8 +256,12 @@
         const salesBarChart = new Chart(salesCtx, {
             type: 'bar',
             data: {
-                labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-                datasets: [{ label: 'Sales ($)', data: [5000,7000,8000,6000,7500,9000], backgroundColor: '#0B6623' }]
+                labels: {{ month_labels|safe }},
+                datasets: [{ 
+                    label: 'Sales (GH₵)', 
+                    data: {{ month_values|safe }}, 
+                    backgroundColor: '#0B6623' 
+                }]
             },
             options: {
                 responsive: true,

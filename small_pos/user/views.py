@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime, timedelta, date
+from django.core.paginator import Paginator
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -122,14 +123,14 @@ def dashboard_view(request):
     products_list = Product.objects.count()
     total_categories = Category.objects.count()
     low_stock_count = Product.objects.filter(stock_level='Low Stock').count()
-    today_sales = Sales.objects.filter(sale_date__date=datetime.date.today())
+    today_sales = Sales.objects.filter(sale_date__date=date.today())
     receipt = Receipt.objects.select_related('sale').prefetch_related('sale__items__product').order_by('-issued_at')[:3]
     receipts = Receipt.objects.select_related('sale').order_by('-issued_at')[:3]
     receipt_count = Receipt.objects.count()
 
     
     #give me the total sales amount for today
-    today = datetime.date.today()
+    today = date.today()
     today_sales = Sales.objects.filter(sale_date__date=today)
     total_sales_amount = sum(sale.total_amount for sale in today_sales)
 
@@ -150,9 +151,7 @@ def dashboard_view(request):
     }
     return render(request, 'dashboard.html',context)
 
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from .models import Receipt, Sales, SaleItem
+
 
 @login_required
 def transactions(request):
@@ -304,8 +303,114 @@ def restock_product(request, product_id):
 
 
 
+from django.shortcuts import render
+from django.db.models import Sum, Count, F
+from django.db.models.functions import TruncMonth
+
+from decimal import Decimal
+from .models import Sales, SaleItem, Product, Category
+
 def reports_view(request):
-    return render(request, 'report.html')
+    # Get date filters from request
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    
+    # Base queryset
+    sales_qs = Sales.objects.all()
+    
+    # Apply date filters if provided
+    if from_date:
+        sales_qs = sales_qs.filter(sale_date__gte=from_date)
+    if to_date:
+        # Include the entire end date
+        to_date_obj = datetime.strptime(to_date, '%Y-%m-%d')
+        to_date_end = to_date_obj + timedelta(days=1)
+        sales_qs = sales_qs.filter(sale_date__lt=to_date_end)
+    
+    # Summary Statistics
+    total_sales = sales_qs.aggregate(
+        total=Sum('total_amount')
+    )['total'] or Decimal('0.00')
+    
+    total_transactions = sales_qs.count()
+    
+    # Top Selling Products (based on quantity sold)
+    top_products = SaleItem.objects.filter(
+        sale__in=sales_qs
+    ).values(
+        'product__name'
+    ).annotate(
+        total_quantity=Sum('quantity'),
+        total_revenue=Sum(F('quantity') * F('unit_price'))
+    ).order_by('-total_quantity')[:5]
+    
+    # Get top product name
+    top_product_name = top_products[0]['product__name'] if top_products else 'N/A'
+    
+    # Category Breakdown
+    category_data = SaleItem.objects.filter(
+        sale__in=sales_qs
+    ).values(
+        'product__category__name'
+    ).annotate(
+        total_quantity=Sum('quantity')
+    ).order_by('-total_quantity')
+    
+    category_labels = [item['product__category__name'] for item in category_data]
+    category_values = [item['total_quantity'] for item in category_data]
+    
+    # Monthly Sales (last 6 months)
+    six_months_ago = datetime.now() - timedelta(days=180)
+    monthly_sales = Sales.objects.filter(
+        sale_date__gte=six_months_ago
+    ).annotate(
+        month=TruncMonth('sale_date')
+    ).values('month').annotate(
+        total=Sum('total_amount')
+    ).order_by('month')
+    
+    # Prepare monthly data for chart
+    month_labels = []
+    month_values = []
+    for item in monthly_sales:
+        month_labels.append(item['month'].strftime('%b'))
+        month_values.append(float(item['total']))
+    
+    # Recent Transactions - Filter sales that have receipts
+    recent_sales_with_receipts = Sales.objects.filter(
+        receipt__isnull=False,
+        sale_date__in=sales_qs.values_list('sale_date', flat=True) if from_date or to_date else Sales.objects.all().values_list('sale_date', flat=True)
+    ).select_related('receipt').prefetch_related('items').order_by('-sale_date')[:10]
+
+    receipt_count = Receipt.objects.count()
+    
+    # Prepare transaction data
+    transactions_data = []
+    for sale in recent_sales_with_receipts:
+        transactions_data.append({
+            'receipt_no': sale.receipt.receipt_number,
+            'date': sale.sale_date.strftime('%Y-%m-%d'),
+            'items_count': sale.items.count(),
+            'total': sale.total_amount,
+            'staff': 'N/A'  # Add staff field to Sales model if needed
+        })
+    
+    context = {
+        'total_sales': total_sales,
+        'total_transactions': total_transactions,
+        'top_product_name': top_product_name,
+        'top_products': top_products,
+        'category_labels': category_labels,
+        'category_values': category_values,
+        'month_labels': month_labels,
+        'month_values': month_values,
+        'transactions': transactions_data,
+        'from_date': from_date or '',
+        'to_date': to_date or '',
+        'receipt_count': receipt_count,
+    }
+    
+    return render(request, 'report.html', context)
 def user_list(request):
     users = User.objects.all()
     return render(request, 'user_list.html', {'users': users})
