@@ -149,6 +149,38 @@ def dashboard_view(request):
 
     }
     return render(request, 'dashboard.html',context)
+
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from .models import Receipt, Sales, SaleItem
+
+@login_required
+def transactions(request):
+    """View to display all transactions/sales"""
+    # Get all receipts ordered by most recent first
+    receipts = Receipt.objects.select_related('sale').prefetch_related(
+        'sale__items__product'
+    ).order_by('-issued_at')
+    
+    # Add pagination (15 items per page)
+    paginator = Paginator(receipts, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Calculate total sales amount for current page
+    total_amount = sum(receipt.sale.total_amount for receipt in page_obj)
+    
+    context = {
+        'page_obj': page_obj,
+        'receipts': page_obj,
+        'total_transactions': receipts.count(),
+        'total_amount': total_amount,
+    }
+    
+    return render(request, 'transactions.html', context)
+
+
+
 from django.shortcuts import render
 from django.db.models import Q
 from .models import Sales, Product

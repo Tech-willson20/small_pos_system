@@ -18,6 +18,7 @@ urlpatterns = [
     path('sales/receipt/<int:sale_id>/', views.checkout, name='checkout'),  # Show receipt
     
     path('reports/', views.reports_view, name='reports'),
+    path('transactions/', views.transactions, name='transactions'),
     path('users/', views.user_list, name='users'),
     path('settings/', views.settings_view, name='settings'),
     path('inventory/', views.inventory_view, name='inventory'),

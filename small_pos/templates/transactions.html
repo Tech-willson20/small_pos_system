@@ -1,0 +1,402 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .header-stats {
+            text-align: right;
+        }
+        
+        .header-stats p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .header-stats .amount {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .content-wrapper {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .transaction-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s;
+        }
+        
+        .transaction-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(5px);
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .transaction-id {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        .transaction-time {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        .transaction-body {
+            margin-bottom: 12px;
+        }
+        
+        .transaction-items {
+            margin-top: 8px;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+        
+        .item-name {
+            flex: 1;
+        }
+        
+        .item-quantity {
+            color: #6b7280;
+            margin: 0 10px;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .transaction-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .payment-method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .payment-cash { background: #d4edda; color: #155724; }
+        .payment-mtn { background: #fff3cd; color: #856404; }
+        .payment-airtel { background: #f8d7da; color: #721c24; }
+        .payment-vodafone { background: #d1ecf1; color: #0c5460; }
+        .payment-card { background: #e2e3e5; color: #383d41; }
+        
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .pagination-btn {
+            padding: 10px 18px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .pagination-btn:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+        
+        .pagination-info {
+            padding: 10px 18px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .summary-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        @media (min-width: 768px) {
+            .content-wrapper {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            
+            .summary-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h2>📊 All Transactions</h2>
+            </div>
+            <div class="header-stats">
+                <p>Total Transactions</p>
+                <div class="amount">{{ total_transactions }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Summary Stats -->
+        <div class="summary-stats">
+            <div class="summary-card">
+                <div class="summary-label">This Page</div>
+                <div class="summary-value">{{ page_obj|length }}</div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-label">Total Amount</div>
+                <div class="summary-value">GH₵{{ total_amount|floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        {% if receipts %}
+            {% for receipt in receipts %}
+            <div class="transaction-card">
+                <div class="transaction-header">
+                    <span class="transaction-id">#{{ receipt.receipt_number }}</span>
+                    <span class="transaction-time">
+                        <i class="far fa-clock"></i> {{ receipt.issued_at|date:"M d, Y - h:i A" }}
+                    </span>
+                </div>
+
+                <div class="transaction-body">
+                    <div class="transaction-items">
+                        {% for item in receipt.sale.items.all %}
+                        <div class="item-row">
+                            <span class="item-name">{{ item.product.name }}</span>
+                            <span class="item-quantity">× {{ item.quantity }}</span>
+                            <span class="item-price">GH₵{{ item.unit_price }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="transaction-footer">
+                    <span class="payment-method payment-{{ receipt.sale.payment_method }}">
+                        <i class="fas fa-credit-card"></i> {{ receipt.sale.get_payment_method_display }}
+                    </span>
+                    <span class="transaction-amount">GH₵{{ receipt.sale.total_amount }}</span>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="pagination-wrapper">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="pagination-btn">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </a>
+                {% endif %}
+
+                <span class="pagination-info">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn">
+                        Next <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-btn">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-receipt"></i>
+                <h3>No Transactions Yet</h3>
+                <p>Start making sales to see transactions here</p>
+                <a href="{% url 'new_sale' %}" class="pagination-btn" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i> Make First Sale
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'sales' %}" class="nav-item active">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sales</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'users' %}" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
