@@ -261,107 +261,17 @@
             <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
             <p class="profile-role">{{ user.position|title|default:"Staff Member" }}</p>
             
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-value">{{ total_sales }}</div>
-                    <div class="stat-label">Total Sales</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="stat-value">GH₵ {{ total_revenue|floatformat:2 }}</div>
-                    <div class="stat-label">Total Revenue</div>
-                </div>
-            </div>
-        </div>
+           <table>
 
-        <!-- Personal Information -->
-        <div class="section-card">
-            <h2 class="section-title">
-                <i class="fas fa-user-edit"></i> Personal Information
-            </h2>
-            <form method="POST" action="{% url 'profile' %}">
-                {% csrf_token %}
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" required>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-control" name="username" value="{{ user.username }}" readonly>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Position</label>
-                    <input type="text" class="form-control" value="{{ user.position|title }}" readonly>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Profile
-                </button>
-            </form>
+                    <tr style="text-align: left; color: #666; font-weight: 600;">Email: {{ user.email }}</tr>
+                  
+                </br>
+                    <tr style="text-align: right; color: var(--primary-color); font-weight: bold;"> username :{{ user.username }}
+                    </tr>
+            </table>
         </div>
-
-        <!-- Change Password -->
-        <div class="section-card">
-            <h2 class="section-title">
-                <i class="fas fa-lock"></i> Change Password
-            </h2>
-            <form method="POST" action="{% url 'profile' %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">Current Password</label>
-                    <input type="password" class="form-control" name="current_password" placeholder="Enter current password">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">New Password</label>
-                    <input type="password" class="form-control" name="new_password" placeholder="Enter new password">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Confirm New Password</label>
-                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm new password">
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-key"></i> Change Password
-                </button>
-            </form>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="section-card">
-            <h2 class="section-title">
-                <i class="fas fa-history"></i> Recent Activity
-            </h2>
-            {% if recent_sales %}
-                {% for sale in recent_sales %}
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-receipt"></i>
-                    </div>
-                    <div class="activity-details">
-                        <div class="activity-title">Sale #{{ sale.sales_id }}</div>
-                        <div class="activity-time">{{ sale.sale_date|date:"M d, Y - h:i A" }}</div>
-                    </div>
-                    <div class="activity-amount">GH₵ {{ sale.total_amount }}</div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p style="text-align: center; color: #666; padding: 20px;">No recent activity</p>
-            {% endif %}
-        </div>
-    </div>
+        
+        
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">

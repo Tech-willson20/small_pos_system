@@ -123,6 +123,10 @@ def dashboard_view(request):
     total_categories = Category.objects.count()
     low_stock_count = Product.objects.filter(stock_level='Low Stock').count()
     today_sales = Sales.objects.filter(sale_date__date=datetime.date.today())
+    receipt = Receipt.objects.select_related('sale').prefetch_related('sale__items__product').order_by('-issued_at')[:3]
+    receipts = Receipt.objects.select_related('sale').order_by('-issued_at')[:3]
+    receipt_count = Receipt.objects.count()
+
     
     #give me the total sales amount for today
     today = datetime.date.today()
@@ -139,6 +143,10 @@ def dashboard_view(request):
         'total_sales_amount': total_sales_amount,
         'today_sales_count': today_sales.count(),
         'user':user,
+        'Receipt_count': receipt_count,
+        'receipt': receipt,
+        'receipts': receipts,
+
     }
     return render(request, 'dashboard.html',context)
 from django.shortcuts import render

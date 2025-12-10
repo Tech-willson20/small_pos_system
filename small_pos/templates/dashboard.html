@@ -398,6 +398,80 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+
+        .recent-section {
+    margin-top: 20px;
+}
+
+.transaction-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #444;
+}
+
+.transaction-id {
+    color: #1f2937;
+}
+
+.transaction-time {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.transaction-body {
+    margin-bottom: 10px;
+}
+
+.transaction-customer {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #374151;
+}
+
+.transaction-items {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+}
+
+.transaction-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.transaction-amount {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+.view-all-btn {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px 0;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-all-btn:hover {
+    background:var(--primary-color);
+}
+
     </style>
 </head>
 <body>
@@ -439,9 +513,9 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="stat-label">Transactions</div>
-                <div class="stat-value">{{ today_sales_count|default:"0" }}</div>
+                <div class="stat-value">{{ Receipt_count|default:"0" }}</div>
                 <div class="stat-change positive">
-                    <i class="fas fa-arrow-up"></i> {{ trans_change|default:"8" }}%
+                    <i class="fas fa-arrow-up"></i> {{ Receipt_count|default:"8" }}%
                 </div>
             </div>
             
@@ -516,43 +590,50 @@
             </div>
         </div>
 
-        <!-- Recent Sales -->
+        <!-- Recent transaction last 3 -->
         <div class="recent-section">
-            <h3 class="section-title">Recent Sales</h3>
-            {% if recent_sales %}
-                {% for sale in recent_sales %}
-                <div class="sales-card">
-                    <div class="sales-header">
-                        <span class="sale-id">#{{ sale.id }}</span>
-                        <span class="sale-time">
-                            <i class="fas fa-clock"></i> {{ sale.created_at|timesince }} ago
-                        </span>
-                    </div>
-                    <div class="sale-details">
-                        <div class="sale-info">
-                            <div class="sale-customer">
-                                <i class="fas fa-user"></i> {{ sale.customer_name|default:"Walk-in Customer" }}
-                            </div>
-                            <div class="sale-items">
-                                <i class="fas fa-shopping-bag"></i> {{ sale.items_count }} item(s)
-                            </div>
-                        </div>
-                        <div class="sale-amount">
-                            GH₵ {{ sale.total_amount }}
-                        </div>
+    <h3 class="section-title">Recent Transactions</h3>
+
+    {% if receipt %}
+        {% for sale in receipt|slice:":3" %}
+            <div class="transaction-card">
+                <div class="transaction-header">
+                    <span class="transaction-id">#{{ sale.receipt_number }}</span>
+                    <span class="transaction-time">{{ sale.issued_at|date:"M d, Y H:i" }}</span>
+                </div>
+
+                <div class="transaction-body">
+                    <p class="transaction-customer">
+                        <strong>Customer:</strong> {{ sale.customer_name|default:"Customer" }}
+                    </p>
+
+                    <div class="transaction-items">
+                        {% for item in sale.sale.items.all %}
+                            <span class="item">
+                                {{ item.quantity }} × {{ item.product.name }}
+                                {% if not forloop.last %}, {% endif %}
+                            </span>
+                        {% endfor %}
                     </div>
                 </div>
-                {% endfor %}
-                <a href="{% url 'sales' %}" class="view-all-btn">
-                    <i class="fas fa-list"></i> View All Sales
-                </a>
-            {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-receipt"></i>
-                    <p>No sales recorded yet</p>
+
+                <div class="transaction-footer">
+                    <span class="transaction-amount">GH₵ {{ sale.sale.total_amount|default:"0.00" }}</span>
                 </div>
-            {% endif %}
+            </div>
+        {% endfor %}
+
+        <a href="{% url 'sales' %}" class="view-all-btn">View All Transactions</a>
+
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <p>No recent transactions found.</p>
         </div>
+    {% endif %}
+</div>
+
+
 
         <!-- Alerts -->
         <div class="alerts-section">
