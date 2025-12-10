@@ -1,0 +1,451 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restock Product - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(11, 102, 35, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        .product-info-card {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .product-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(11, 102, 35, 0.2);
+        }
+        
+        .product-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .product-icon i {
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .product-details h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+        }
+        
+        .product-details .category {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .current-stock-display {
+            background: rgba(11, 102, 35, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .current-stock-display .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .current-stock-display .value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stock-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .status-low {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        
+        .status-ok {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .form-container {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-label i {
+            margin-right: 5px;
+        }
+        
+        .quantity-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-quantity {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-quantity:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .quantity-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-quick {
+            padding: 10px;
+            border: 2px solid var(--primary-color);
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-quick:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .new-stock-preview {
+            background: rgba(11, 102, 35, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .new-stock-preview .label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .new-stock-preview .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--light-green);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(11, 102, 35, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn-submit:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(11, 102, 35, 0.4);
+        }
+        
+        .btn-cancel {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(11, 102, 35, 0.1);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            padding: 12px 15px;
+            margin: 15px;
+        }
+        
+        .alert-success {
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .content-wrapper {
+            padding-bottom: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .form-container, .page-header, .product-info-card, .alert {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'inventory' %}">
+                <i class="fas fa-plus-circle"></i> Restock Product
+            </a>
+            <button class="btn btn-sm btn-light" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-box-open"></i> Restock Inventory</h1>
+            <p class="text-muted mb-0">Add new stock to existing product</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Product Info Card -->
+        <div class="product-info-card">
+            <div class="product-display">
+                <div class="product-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="product-details">
+                    <h2>{{ product.name }}</h2>
+                    <p class="category">
+                        <i class="fas fa-tag"></i> {{ product.category|default:"General" }}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="current-stock-display">
+                <div class="label">Current Stock Level</div>
+                <div class="value">{{ product.stock }}</div>
+                <span class="stock-status {% if product.stock <= product.min_stock %}status-low{% else %}status-ok{% endif %}">
+                    {% if product.stock <= product.min_stock %}Low Stock{% else %}In Stock{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Restock Form -->
+        <div class="form-container">
+            <form method="POST" action="{% url 'restock_product' product.id %}" id="restockForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-boxes"></i> Quantity to Add
+                    </label>
+                    <div class="quantity-input-group">
+                        <button type="button" class="btn-quantity" onclick="decreaseQuantity()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" name="additional_stock" id="quantityInput" 
+                               class="quantity-input" value="1" min="1" required 
+                               oninput="updatePreview()">
+                        <button type="button" class="btn-quantity" onclick="increaseQuantity()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="quick-buttons">
+                        <button type="button" class="btn-quick" onclick="setQuantity(10)">+10</button>
+                        <button type="button" class="btn-quick" onclick="setQuantity(25)">+25</button>
+                        <button type="button" class="btn-quick" onclick="setQuantity(50)">+50</button>
+                    </div>
+                </div>
+
+                <div class="new-stock-preview">
+                    <div class="label">New Stock Level Will Be</div>
+                    <div class="value" id="newStockValue">{{ product.stock|add:1 }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-sticky-note"></i> Notes (Optional)
+                    </label>
+                    <textarea name="notes" class="form-control" rows="3" 
+                              placeholder="Add any notes about this restock..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check-circle"></i> Confirm Restock
+                </button>
+                
+                <button type="button" class="btn-cancel" onclick="window.history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const currentStock = {{ product.stock }};
+        
+        function updatePreview() {
+            const quantity = parseInt(document.getElementById('quantityInput').value) || 0;
+            const newStock = currentStock + quantity;
+            document.getElementById('newStockValue').textContent = newStock;
+        }
+        
+        function increaseQuantity() {
+            const input = document.getElementById('quantityInput');
+            input.value = parseInt(input.value) + 1;
+            updatePreview();
+        }
+        
+        function decreaseQuantity() {
+            const input = document.getElementById('quantityInput');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+                updatePreview();
+            }
+        }
+        
+        function setQuantity(amount) {
+            const input = document.getElementById('quantityInput');
+            input.value = parseInt(input.value) + amount;
+            updatePreview();
+        }
+    </script>
+</body>
+</html>

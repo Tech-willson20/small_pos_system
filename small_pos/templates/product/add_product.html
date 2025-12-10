@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-container {
+            padding: 20px;
+            padding-bottom: 100px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-label {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .help-text {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        .help-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 102, 35, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.location.href='{% url 'inventory' %}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <h2><i class="fas fa-plus-circle"></i> Add Product</h2>
+            </div>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" id="productForm">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="form-card">
+                <div class="section-title">
+                    <i class="fas fa-info-circle"></i> Basic Information
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Product Name <span class="required">*</span></label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter product name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Category <span class="required">*</span></label>
+                    <select name="category" class="form-select" required>
+                        <option value="">Select Category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="help-text">
+                        <i class="fas fa-plus"></i> 
+                        <a href="{% url 'add_category' %}" target="_blank">
+                            Create new category
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" placeholder="Enter product description"></textarea>
+                </div>
+            </div>
+
+            <!-- Pricing & Stock -->
+            <div class="form-card">
+                <div class="section-title">
+                    <i class="fas fa-dollar-sign"></i> Pricing & Stock
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Selling Price (GH₵) <span class="required">*</span></label>
+                    <input type="number" name="price" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cost Price (GH₵)</label>
+                    <input type="number" name="cost_price" class="form-control" placeholder="0.00" step="0.01" min="0">
+                    <div class="help-text">Optional: For profit margin calculation</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Stock Quantity <span class="required">*</span></label>
+                    <input type="number" name="stock" class="form-control" placeholder="0" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Minimum Stock Level</label>
+                    <input type="number" name="min_stock" class="form-control" placeholder="10" min="0" value="10">
+                    <div class="help-text">Alert when stock falls below this level</div>
+                </div>
+            </div>
+
+            <!-- Product Identification -->
+            <div class="form-card">
+                <div class="section-title">
+                    <i class="fas fa-barcode"></i> Product Identification
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">SKU (Stock Keeping Unit)</label>
+                    <input type="text" name="sku" id="sku" class="form-control" placeholder="e.g., PROD-001">
+                    <div class="help-text">Unique identifier for inventory management</div>
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" 
+                        onclick="window.location.href='{% url 'inventory' %}'">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Product
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-generate SKU based on product name
+        const nameInput = document.querySelector('input[name="name"]');
+        const skuInput = document.querySelector('input[name="sku"]');
+        
+        if (nameInput && skuInput) {
+            nameInput.addEventListener('blur', function() {
+                if (!skuInput.value && this.value) {
+                    const name = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
+                    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                    skuInput.value = `${name}-${random}`;
+                }
+            });
+        }
+
+        // Form validation
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            const priceInput = document.querySelector('input[name="price"]');
+            const costPriceInput = document.querySelector('input[name="cost_price"]');
+            
+            if (priceInput && costPriceInput && costPriceInput.value) {
+                const price = parseFloat(priceInput.value);
+                const costPrice = parseFloat(costPriceInput.value);
+                
+                if (price < costPrice) {
+                    if (!confirm('Warning: Selling price is less than cost price. You will make a loss. Continue?')) {
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

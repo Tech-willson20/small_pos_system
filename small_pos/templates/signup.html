@@ -268,8 +268,10 @@
         }
     </style>
 </head>
+
 <body>
     <div class="signup-container">
+
         <!-- Logo Section -->
         <div class="logo-section">
             <div class="logo-icon">
@@ -302,99 +304,87 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-user"></i> First Name
-                            </label>
+                            <label class="form-label"><i class="fas fa-user"></i> First Name</label>
                             <div class="input-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" class="form-control" name="first_name" placeholder="First name" required>
+                                <input type="text" class="form-control" name="first_name" required>
                             </div>
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-user"></i> Last Name
-                            </label>
+                            <label class="form-label"><i class="fas fa-user"></i> Last Name</label>
                             <div class="input-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" class="form-control" name="last_name" placeholder="Last name" required>
+                                <input type="text" class="form-control" name="last_name" required>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Username -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-store"></i> Business Name
-                    </label>
+                    <label class="form-label"><i class="fas fa-id-badge"></i> Username</label>
                     <div class="input-icon">
-                        <i class="fas fa-store"></i>
-                        <input type="text" class="form-control" name="business_name" placeholder="Your business name" required>
+                        <i class="fas fa-id-badge"></i>
+                        <input type="text" class="form-control" name="username" placeholder="Choose a username" required>
                     </div>
                 </div>
-                
+
+                <!-- Position -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-phone"></i> Phone Number
-                    </label>
+                    <label class="form-label"><i class="fas fa-briefcase"></i> Position</label>
                     <div class="input-icon">
-                        <i class="fas fa-phone"></i>
-                        <input type="tel" class="form-control" name="phone" placeholder="0240000000" required>
+                        <i class="fas fa-briefcase"></i>
+                        <select name="position" class="form-select" required>
+                            <option value="" disabled selected>Select your role</option>
+                            <option value="admin">Admin</option>
+                            <option value="owner">Owner</option>
+                            <option value="worker">Worker</option>
+                        </select>
                     </div>
                 </div>
-                
+
+                <!-- Email -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-envelope"></i> Email Address
-                    </label>
+                    <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
                     <div class="input-icon">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" class="form-control" name="email" placeholder="your@email.com" required>
+                        <input type="email" class="form-control" name="email" required>
                     </div>
                 </div>
                 
+                <!-- Password -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-map-marker-alt"></i> Location/Address
-                    </label>
-                    <div class="input-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <input type="text" class="form-control" name="location" placeholder="Business location" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Password
-                    </label>
+                    <label class="form-label"><i class="fas fa-lock"></i> Password</label>
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Create password" required minlength="8">
+                        <input type="password" class="form-control" name="password" id="password" required minlength="8">
                         <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
                             <i class="fas fa-eye" id="toggleIcon1"></i>
                         </button>
                     </div>
+
                     <div class="strength-bar">
                         <div class="strength-fill" id="strengthBar"></div>
                     </div>
-                    <small class="password-strength" id="strengthText"></small>
+                    <small id="strengthText" class="password-strength"></small>
                 </div>
                 
+                <!-- Confirm Password -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Confirm Password
-                    </label>
+                    <label class="form-label"><i class="fas fa-lock"></i> Confirm Password</label>
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
+                        <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
                         <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', 'toggleIcon2')">
                             <i class="fas fa-eye" id="toggleIcon2"></i>
                         </button>
                     </div>
                 </div>
                 
+                <!-- Terms -->
                 <div class="terms-check">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
@@ -418,73 +408,63 @@
             </div>
         </div>
     </div>
+
+<script>
+function togglePassword(inputId, iconId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
     
-    <script>
-        function togglePassword(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-        
-        // Password strength checker
-        document.getElementById('password').addEventListener('input', function(e) {
-            const password = e.target.value;
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthText = document.getElementById('strengthText');
-            
-            let strength = 0;
-            if (password.length >= 8) strength += 25;
-            if (password.match(/[a-z]+/)) strength += 25;
-            if (password.match(/[A-Z]+/)) strength += 25;
-            if (password.match(/[0-9]+/) || password.match(/[^a-zA-Z0-9]+/)) strength += 25;
-            
-            strengthBar.style.width = strength + '%';
-            
-            if (strength <= 25) {
-                strengthBar.style.background = '#ff4444';
-                strengthText.textContent = 'Weak password';
-                strengthText.style.color = '#ff4444';
-            } else if (strength <= 50) {
-                strengthBar.style.background = '#ff9800';
-                strengthText.textContent = 'Fair password';
-                strengthText.style.color = '#ff9800';
-            } else if (strength <= 75) {
-                strengthBar.style.background = '#0D8030';
-                strengthText.textContent = 'Good password';
-                strengthText.style.color = '#0D8030';
-            } else {
-                strengthBar.style.background = '#0B6623';
-                strengthText.textContent = 'Strong password';
-                strengthText.style.color = '#0B6623';
-            }
-        });
-        
-        // Form validation
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            
-            if (password.length < 8) {
-                e.preventDefault();
-                alert('Password must be at least 8 characters long!');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match!');
-                return;
-            }
-        });
-    </script>
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+document.getElementById('password').addEventListener('input', function(e) {
+    const password = e.target.value;
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (password.match(/[a-z]+/)) strength += 25;
+    if (password.match(/[A-Z]+/)) strength += 25;
+    if (password.match(/[0-9]+/) || password.match(/[^a-zA-Z0-9]+/)) strength += 25;
+    
+    strengthBar.style.width = strength + '%';
+    
+    if (strength <= 25) {
+        strengthBar.style.background = '#ff4444';
+        strengthText.textContent = 'Weak password';
+        strengthText.style.color = '#ff4444';
+    } else if (strength <= 50) {
+        strengthBar.style.background = '#ff9800';
+        strengthText.textContent = 'Fair password';
+        strengthText.style.color = '#ff9800';
+    } else if (strength <= 75) {
+        strengthBar.style.background = '#0D8030';
+        strengthText.textContent = 'Good password';
+        strengthText.style.color = '#0D8030';
+    } else {
+        strengthBar.style.background = '#0B6623';
+        strengthText.textContent = 'Strong password';
+        strengthText.style.color = '#0B6623';
+    }
+});
+
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+    }
+});
+</script>
+
 </body>
 </html>

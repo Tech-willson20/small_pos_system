@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3069"/><column_width id="4" width="0"/></tab_structure><tab_browse><table title="." custom_title="0" dock_id="2" table="0,0:"/><dock_state state="000000ff00000000fd00000001000000020000043c000002b6fc0100000002fb000000160064006f0063006b00420072006f007700730065003101000000000000043c0000000000000000fb000000160064006f0063006b00420072006f007700730065003201000000000000043c0000011800ffffff000002580000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">-- Insert 5 Categories
+INSERT INTO user_category (name, description, created_at) VALUES
+('Food', 'All kinds of food items', CURRENT_TIMESTAMP),
+('Beverages', 'Drinks and beverages', CURRENT_TIMESTAMP),
+('Snacks', 'Light snacks and munchies', CURRENT_TIMESTAMP),
+('Dairy', 'Milk and milk products', CURRENT_TIMESTAMP),
+('Others', 'Miscellaneous products', CURRENT_TIMESTAMP);
+
+-- Insert Products for Category 1: Food
+INSERT INTO user_product (name, category_id, description, price, cost_price, stock, min_stock, sku, created_by_id, created_at) VALUES
+('Chicken Fillet', 1, 'Fresh chicken fillet', 10.50, 6.00, 50, 10, 'CHFIL001', 1, CURRENT_TIMESTAMP),
+('Rice Meal', 1, 'Served with chicken or beef', 8.00, 4.50, 80, 10, 'RICEM001', 1, CURRENT_TIMESTAMP),
+('Burger Steak', 1, 'Beef burger steak', 9.50, 5.00, 60, 10, 'BURST001', 1, CURRENT_TIMESTAMP),
+('Beef Steak', 1, 'Grilled beef steak', 12.00, 7.00, 40, 10, 'BSTEK001', 1, CURRENT_TIMESTAMP),
+('Fried Chicken', 1, 'Crispy fried chicken', 11.00, 6.50, 70, 10, 'FRCHK001', 1, CURRENT_TIMESTAMP),
+('Spaghetti', 1, 'Italian spaghetti pasta', 7.50, 4.00, 65, 10, 'SPAGH001', 1, CURRENT_TIMESTAMP);
+
+-- Insert Products for Category 2: Beverages
+INSERT INTO user_product (name, category_id, description, price, cost_price, stock, min_stock, sku, created_by_id, created_at) VALUES
+('Coke', 2, 'Carbonated soft drink', 1.50, 0.80, 200, 20, 'COKE001', 1, CURRENT_TIMESTAMP),
+('Pepsi', 2, 'Carbonated soft drink', 1.50, 0.80, 180, 20, 'PEPSI001', 1, CURRENT_TIMESTAMP),
+('Orange Juice', 2, 'Freshly squeezed', 2.00, 1.00, 120, 15, 'OJ001', 1, CURRENT_TIMESTAMP),
+('Mineral Water', 2, 'Bottled water', 1.00, 0.50, 300, 30, 'WATR001', 1, CURRENT_TIMESTAMP),
+('Coffee', 2, 'Hot brewed coffee', 2.50, 1.50, 150, 20, 'COFF001', 1, CURRENT_TIMESTAMP),
+('Tea', 2, 'Hot tea beverage', 2.00, 1.20, 130, 20, 'TEA001', 1, CURRENT_TIMESTAMP);
+
+-- Insert Products for Category 3: Snacks
+INSERT INTO user_product (name, category_id, description, price, cost_price, stock, min_stock, sku, created_by_id, created_at) VALUES
+('Chips', 3, 'Potato chips', 1.50, 0.80, 150, 15, 'CHIPS001', 1, CURRENT_TIMESTAMP),
+('Nuts Mix', 3, 'Mixed nuts', 2.50, 1.50, 100, 10, 'NUTS001', 1, CURRENT_TIMESTAMP),
+('Popcorn', 3, 'Buttery popcorn', 1.80, 0.90, 120, 15, 'POP001', 1, CURRENT_TIMESTAMP),
+('Cookies', 3, 'Chocolate cookies', 2.00, 1.00, 90, 10, 'COOK001', 1, CURRENT_TIMESTAMP),
+('Granola Bar', 3, 'Healthy granola bar', 1.50, 0.80, 80, 10, 'GRAN001', 1, CURRENT_TIMESTAMP),
+('Pretzels', 3, 'Salty pretzel sticks', 1.70, 0.90, 110, 10, 'PRET001', 1, CURRENT_TIMESTAMP);
+
+-- Insert Products for Category 4: Dairy
+INSERT INTO user_product (name, category_id, description, price, cost_price, stock, min_stock, sku, created_by_id, created_at) VALUES
+('Milk', 4, 'Fresh whole milk', 2.00, 1.20, 200, 20, 'MILK001', 1, CURRENT_TIMESTAMP),
+('Cheese', 4, 'Cheddar cheese', 3.50, 2.00, 100, 15, 'CHEE001', 1, CURRENT_TIMESTAMP),
+('Yogurt', 4, 'Plain yogurt', 1.80, 1.00, 120, 15, 'YOG001', 1, CURRENT_TIMESTAMP),
+('Butter', 4, 'Unsalted butter', 2.50, 1.50, 90, 10, 'BUTT001', 1, CURRENT_TIMESTAMP),
+('Cream', 4, 'Fresh cream', 2.20, 1.30, 80, 10, 'CREA001', 1, CURRENT_TIMESTAMP),
+('Ice Cream', 4, 'Vanilla ice cream', 3.00, 1.80, 70, 10, 'ICE001', 1, CURRENT_TIMESTAMP);
+
+-- Insert Products for Category 5: Others
+INSERT INTO user_product (name, category_id, description, price, cost_price, stock, min_stock, sku, created_by_id, created_at) VALUES
+('Napkins', 5, 'Paper napkins', 0.50, 0.20, 300, 30, 'NAP001', 1, CURRENT_TIMESTAMP),
+('Plastic Cups', 5, 'Disposable cups', 0.30, 0.10, 400, 50, 'CUP001', 1, CURRENT_TIMESTAMP),
+('Cleaning Spray', 5, 'Surface cleaner', 3.00, 1.50, 80, 10, 'CLN001', 1, CURRENT_TIMESTAMP),
+('Dish Soap', 5, 'Liquid soap', 2.50, 1.20, 120, 15, 'SOAP001', 1, CURRENT_TIMESTAMP),
+('Trash Bags', 5, 'Large trash bags', 2.00, 1.00, 150, 20, 'TRASH001', 1, CURRENT_TIMESTAMP),
+('Spoon Set', 5, 'Plastic spoons', 1.00, 0.50, 200, 20, 'SPOON001', 1, CURRENT_TIMESTAMP);
+</sql><current_tab id="0"/></tab_sql></sqlb_project>

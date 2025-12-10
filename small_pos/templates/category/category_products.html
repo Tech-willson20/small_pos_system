@@ -1,0 +1,514 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.name }} Products - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .header-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .category-info-section {
+            background: white;
+            margin: -20px 20px 20px 20px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .category-info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .category-icon-large {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--light-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .category-details {
+            flex: 1;
+        }
+        
+        .category-name-large {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .category-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .search-section {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: var(--light-green);
+        }
+        
+        .products-section {
+            padding: 0 20px 100px 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            border-color: var(--primary-color);
+box-shadow: 0 4px 12px rgba(11, 102, 35, 0.15);
+transform: translateY(-2px);
+}.product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+    }
+    
+    .product-info {
+        flex: 1;
+    }
+    
+    .product-name {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    .product-sku {
+        color: #999;
+        font-size: 0.8rem;
+    }
+    
+    .product-price {
+        background: var(--primary-color);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    
+    .product-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .detail-item i {
+        color: var(--primary-color);
+        width: 20px;
+    }
+    
+    .detail-label {
+        color: #666;
+        font-weight: 600;
+    }
+    
+    .detail-value {
+        color: #333;
+    }
+    
+    .stock-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .stock-in {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .stock-low {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .stock-out {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--primary-color);
+        opacity: 0.3;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state h3 {
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        color: #999;
+        font-size: 0.95rem;
+    }
+    
+    .btn-add-product {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 20px;
+    }
+    
+    .btn-add-product:hover {
+        background: var(--light-green);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(11, 102, 35, 0.3);
+    }
+    
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: white;
+        border-top: 2px solid var(--primary-color);
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        z-index: 1000;
+    }
+    
+    .nav-item {
+        text-align: center;
+        color: var(--primary-color);
+        text-decoration: none;
+        flex: 1;
+        padding: 5px;
+        opacity: 0.6;
+        transition: all 0.3s;
+    }
+    
+    .nav-item.active {
+        opacity: 1;
+        font-weight: 600;
+    }
+    
+    .nav-item i {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 3px;
+    }
+    
+    .nav-item span {
+        font-size: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+        .products-section, .search-section {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+</style></head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.location.href='{% url 'category' %}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <h2><i class="fas fa-box"></i> Category Products</h2>
+                <div class="header-subtitle">{{ category.name }}</div>
+            </div>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+<!-- Category Info Section -->
+<div class="category-info-section">
+    <div class="category-info-header">
+        <div class="category-icon-large">
+            <i class="fas fa-tag"></i>
+        </div>
+        <div class="category-details">
+            <div class="category-name-large">{{ category.name }}</div>
+            {% if category.description %}
+                <div class="category-desc">{{ category.description }}</div>
+            {% else %}
+                <div class="category-desc" style="font-style: italic;">No description available</div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-number">{{ product_count }}</div>
+            <div class="stat-label">Products</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ category.created_at|date:"M Y" }}</div>
+            <div class="stat-label">Created</div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="search-section">
+    <form method="GET" action="{% url 'view_category_products' category.id %}">
+        <div class="search-box">
+            <input type="text" name="search" placeholder="Search products in {{ category.name }}..." 
+                   value="{{ search_query }}">
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Products Section -->
+<div class="products-section">
+    {% if products %}
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-header">
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    {% if product.sku %}
+                        <div class="product-sku">SKU: {{ product.sku }}</div>
+                    {% endif %}
+                </div>
+                <div class="product-price">
+                    GH₵ {{ product.price }}
+                </div>
+            </div>
+            
+            {% if product.description %}
+            <div style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">
+                {{ product.description|truncatewords:15 }}
+            </div>
+            {% endif %}
+            
+            <div class="product-details">
+                <div class="detail-item">
+                    <i class="fas fa-boxes"></i>
+                    <span class="detail-label">Stock:</span>
+                    <span class="detail-value">{{ product.stock }}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="detail-label">Status:</span>
+                    <span class="stock-badge 
+                        {% if product.stock_level == 'In Stock' %}stock-in
+                        {% elif product.stock_level == 'Low Stock' %}stock-low
+                        {% else %}stock-out{% endif %}">
+                        {{ product.stock_level }}
+                    </span>
+                </div>
+                {% if product.cost_price %}
+                <div class="detail-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span class="detail-label">Cost:</span>
+                    <span class="detail-value">GH₵ {{ product.cost_price }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-item">
+                    <i class="fas fa-calendar"></i>
+                    <span class="detail-label">Added:</span>
+                    <span class="detail-value">{{ product.created_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <h3>No Products Found</h3>
+            {% if search_query %}
+                <p>No products match your search "{{ search_query }}" in {{ category.name }}</p>
+                <button class="btn-add-product" 
+                        onclick="window.location.href='{% url 'view_category_products' category.id %}'">
+                    <i class="fas fa-list"></i> View All Products
+                </button>
+            {% else %}
+                <p>No products have been added to {{ category.name }} yet</p>
+                <button class="btn-add-product" 
+                        onclick="window.location.href='{% url 'inventory' %}'">
+                    <i class="fas fa-plus-circle"></i> Add Product
+                </button>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="{% url 'sales' %}" class="nav-item">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Sales</span>
+    </a>
+    <a href="{% url 'inventory' %}" class="nav-item active">
+        <i class="fas fa-boxes"></i>
+        <span>Inventory</span>
+    </a>
+    <a href="{% url 'users' %}" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Users</span>
+    </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

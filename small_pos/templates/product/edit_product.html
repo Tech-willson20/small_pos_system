@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(11, 102, 35, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        .form-container {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(11, 102, 35, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(11, 102, 35, 0.4);
+        }
+        
+        .btn-cancel {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(11, 102, 35, 0.1);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        @media (min-width: 768px) {
+            .form-container, .page-header {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'inventory' %}">
+                <i class="fas fa-edit"></i> Edit Product
+            </a>
+            <button class="btn btn-sm btn-light" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-pencil-alt"></i> Edit Product Details</h1>
+            <p class="text-muted mb-0">Update product information</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'edit_product' product.id %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-box"></i> Product Name
+                    </label>
+                    <input type="text" name="name" class="form-control" 
+                           value="{{ product.name }}" required>
+                </div>
+
+                <!-- CATEGORY (not required anymore) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tags"></i> Category
+                    </label>
+                    <select name="category" class="form-select">
+                        <option value="">Select Category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}"
+                                {% if product.category.id == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                   
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i> Price (GH₵)
+                    </label>
+                    <input type="number" name="price" class="form-control" 
+                           value="{{ product.price }}" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-layer-group"></i> Current Stock
+                    </label>
+                    <input type="number" name="stock" class="form-control" 
+                           value="{{ product.stock }}" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-exclamation-triangle"></i> Minimum Stock Level
+                    </label>
+                    <input type="number" name="min_stock" class="form-control" 
+                           value="{{ product.min_stock }}" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-align-left"></i> Description (Optional)
+                    </label>
+                    <textarea name="description" class="form-control" 
+                              rows="3">{{ product.description }}</textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                
+                <button type="button" class="btn-cancel" onclick="window.history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

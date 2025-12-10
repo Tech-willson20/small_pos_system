@@ -1,0 +1,331 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .category-preview {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .preview-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--light-green));
+            box-shadow: 0 4px 12px rgba(11, 102, 35, 0.3);
+        }
+        
+        .preview-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .preview-name {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .preview-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .form-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+        }
+        
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .help-text {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 102, 35, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.location.href='{% url "category" %}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <h2><i class="fas fa-plus-circle"></i> Add Category</h2>
+            </div>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Preview Card -->
+        <div class="category-preview">
+            <div class="preview-icon" id="previewIcon">
+                <i class="fas fa-tag"></i>
+            </div>
+            <div class="preview-name" id="previewName">Category Name</div>
+            <div class="preview-description" id="previewDescription">Category description will appear here</div>
+        </div>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <!-- Category Details -->
+            <div class="form-card">
+                <div class="form-group">
+                    <label class="form-label" for="id_name">Category Name <span class="required">*</span></label>
+                    <input type="text" 
+                           name="name" 
+                           id="id_name" 
+                           class="form-control" 
+                           maxlength="100" 
+                           required 
+                           placeholder="Enter category name"
+                           value="{{ name|default:'' }}">
+                    {% if errors.name %}
+                        <div class="invalid-feedback">{{ errors.name }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_description">Description</label>
+                    <textarea name="description" 
+                              id="id_description" 
+                              class="form-control" 
+                              placeholder="Enter category description (optional)">{{ description|default:'' }}</textarea>
+                    {% if errors.description %}
+                        <div class="invalid-feedback">{{ errors.description }}</div>
+                    {% endif %}
+                    <div class="help-text">Optional: Help staff understand what products belong here</div>
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" 
+                        onclick="window.location.href='{% url "category" %}'">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Category
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get form elements
+        const nameInput = document.getElementById('id_name');
+        const descriptionInput = document.getElementById('id_description');
+        
+        // Update preview when name changes
+        if (nameInput) {
+            nameInput.addEventListener('input', function() {
+                document.getElementById('previewName').textContent = 
+                    this.value || 'Category Name';
+            });
+        }
+
+        // Update preview when description changes
+        if (descriptionInput) {
+            descriptionInput.addEventListener('input', function() {
+                document.getElementById('previewDescription').textContent = 
+                    this.value || 'Category description will appear here';
+            });
+        }
+
+        // Add error classes to invalid fields
+        document.querySelectorAll('.invalid-feedback').forEach(function(feedback) {
+            const input = feedback.previousElementSibling;
+            if (input) {
+                input.classList.add('is-invalid');
+            }
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

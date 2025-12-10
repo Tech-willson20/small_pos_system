@@ -37,6 +37,9 @@
             padding: 15px;
             background: white;
             border-bottom: 2px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .search-box {
@@ -64,6 +67,61 @@
             transform: translateY(-50%);
             color: var(--primary-color);
             font-size: 1.2rem;
+        }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(11, 102, 35, 0.2);
+        }
+
+        .search-results-dropdown.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(11, 102, 35, 0.1);
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: rgba(11, 102, 35, 0.05);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-name {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .search-result-details {
+            color: #666;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3px;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #666;
         }
         
         .products-grid {
@@ -382,8 +440,9 @@
         <!-- Search Section -->
         <div class="search-section">
             <div class="search-box">
-                <input type="text" class="search-input" id="searchProducts" placeholder="Search products...">
+                <input type="text" class="search-input" id="searchProducts" placeholder="Search products to add to cart..." autocomplete="off">
                 <i class="fas fa-search search-icon"></i>
+                <div class="search-results-dropdown" id="searchResults"></div>
             </div>
         </div>
 
@@ -459,7 +518,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="checkoutForm" method="POST" action="{% url 'process_sale' %}">
+                    <form id="checkoutForm" method="POST" action="{% url 'checkout' %}">
                         {% csrf_token %}
                         
                         <div class="payment-summary">
@@ -478,24 +537,13 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Customer Name (Optional)</label>
-                            <input type="text" class="form-control" name="customer_name" placeholder="Walk-in customer">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Customer Phone (Optional)</label>
-                            <input type="tel" class="form-control" name="customer_phone" placeholder="0240000000">
-                        </div>
-                        
-                        <div class="mb-3">
                             <label class="form-label">Payment Method</label>
-                            <select class="form-select" name="payment_method" id="paymentMethod" required>
-                                <option value="">Select Payment Method</option>
+                            <select class="form-select" name="payment_method" id="paymentMethod">
                                 <option value="cash">Cash</option>
                                 <option value="mtn">MTN Mobile Money</option>
-                                <option value="airtel">AirtelTigo Money</option>
                                 <option value="vodafone">Vodafone Cash</option>
-                                <option value="card">Card</option>
+                                <option value="airtel">AirtelTigo Money</option>
+                                <option value="card">Card Payment</option>
                             </select>
                         </div>
                         
@@ -503,7 +551,7 @@
                             <label class="form-label">Amount Paid</label>
                             <input type="number" step="0.01" class="form-control" name="amount_paid" id="amountPaid" placeholder="0.00">
                         </div>
-                        
+
                         <div class="mb-3" id="changeGroup" style="display: none;">
                             <label class="form-label">Change</label>
                             <input type="text" class="form-control" id="changeAmount" readonly>
@@ -521,6 +569,7 @@
                         </div>
                         
                         <input type="hidden" name="cart_data" id="cartData">
+                        <input type="hidden" name="sale_id" value="{{ sale.sales_id }}">
                         
                         <button type="submit" class="btn w-100" style="background: var(--primary-color); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: 600;">
                             <i class="fas fa-check-circle"></i> Complete Sale
@@ -534,6 +583,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let cart = [];
+        let searchTimeout;
         
         function addToCart(element) {
             if (element.classList.contains('out-of-stock')) return;
@@ -557,6 +607,44 @@
             }
             
             updateCart();
+            
+            // Provide visual feedback
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function addToCartFromSearch(productData) {
+            const existingItem = cart.find(item => item.id === productData.id);
+            
+            if (existingItem) {
+                if (existingItem.quantity < productData.stock) {
+                    existingItem.quantity++;
+                } else {
+                    alert('Not enough stock!');
+                    return;
+                }
+            } else {
+                if (productData.stock > 0) {
+                    cart.push({
+                        id: productData.id,
+                        name: productData.name,
+                        price: parseFloat(productData.price),
+                        quantity: 1,
+                        stock: productData.stock
+                    });
+                } else {
+                    alert('Product is out of stock!');
+                    return;
+                }
+            }
+            
+            updateCart();
+            
+            // Clear search
+            document.getElementById('searchProducts').value = '';
+            document.getElementById('searchResults').classList.remove('show');
         }
         
         function updateCart() {
@@ -659,9 +747,26 @@
             }
         });
         
-        // Search products
-        document.getElementById('searchProducts').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
+        // Enhanced search functionality
+        const searchInput = document.getElementById('searchProducts');
+        const searchResults = document.getElementById('searchResults');
+        
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (searchTerm.length === 0) {
+                searchResults.innerHTML = '';
+                searchResults.classList.remove('show');
+                // Show all products in grid
+                document.querySelectorAll('.product-item').forEach(item => {
+                    item.style.display = 'block';
+                });
+                return;
+            }
+            
+            // Filter products in grid
             document.querySelectorAll('.product-item').forEach(item => {
                 const name = item.dataset.name.toLowerCase();
                 if (name.includes(searchTerm)) {
@@ -670,6 +775,55 @@
                     item.style.display = 'none';
                 }
             });
+            
+            // Show dropdown results
+            searchTimeout = setTimeout(() => {
+                const matchedProducts = Array.from(document.querySelectorAll('.product-item')).filter(item => {
+                    return item.dataset.name.toLowerCase().includes(searchTerm) && item.style.display !== 'none';
+                });
+                
+                if (matchedProducts.length > 0) {
+                    let resultsHtml = '';
+                    matchedProducts.slice(0, 5).forEach(product => {
+                        const stock = parseInt(product.dataset.stock);
+                        const isOutOfStock = stock === 0;
+                        
+                        resultsHtml += `
+                            <div class="search-result-item ${isOutOfStock ? 'out-of-stock' : ''}" 
+                                 onclick='${!isOutOfStock ? `addToCartFromSearch({id: "${product.dataset.id}", name: "${product.dataset.name}", price: "${product.dataset.price}", stock: ${stock}})` : 'alert("Out of stock!")'}'>
+                                <div class="search-result-name">${product.dataset.name}</div>
+                                <div class="search-result-details">
+                                    <span>GH₵ ${parseFloat(product.dataset.price).toFixed(2)}</span>
+                                    <span>${isOutOfStock ? 'Out of Stock' : 'Stock: ' + stock}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    searchResults.innerHTML = resultsHtml;
+                    searchResults.classList.add('show');
+                } else {
+                    searchResults.innerHTML = '<div class="no-results"><i class="fas fa-search"></i> No products found</div>';
+                    searchResults.classList.add('show');
+                }
+            }, 300);
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-box')) {
+                searchResults.classList.remove('show');
+            }
+        });
+        
+        // Handle Enter key in search
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstResult = searchResults.querySelector('.search-result-item:not(.out-of-stock)');
+                if (firstResult) {
+                    firstResult.click();
+                }
+            }
         });
     </script>
 </body>

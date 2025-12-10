@@ -1,0 +1,403 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--light-green));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(11, 102, 35, 0.3);
+        }
+        
+        .info-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-label i {
+            color: var(--primary-color);
+        }
+        
+        .form-label .required {
+            color: #dc3545;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
+            outline: none;
+        }
+        
+        .form-control:hover {
+            border-color: var(--light-green);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 102, 35, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+        
+        .form-hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .form-hint i {
+            color: #17a2b8;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        @media (max-width: 576px) {
+            .form-card {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.location.href='{% url 'category' %}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <h2><i class="fas fa-edit"></i> Edit Category</h2>
+            </div>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Category Info Card -->
+        <div class="info-card">
+            <h4><i class="fas fa-info-circle"></i> Current Category</h4>
+            <p><i class="fas fa-tag"></i> <strong>Name:</strong> {{ category.name }}</p>
+            <p><i class="fas fa-calendar"></i> <strong>Created:</strong> {{ category.created_at|date:"F d, Y" }}</p>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-edit"></i> Update Category Details</h3>
+            
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST" action="{% url 'edit_category' category.id %}" id="categoryForm">
+                {% csrf_token %}
+                
+                <!-- Category Name -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tag"></i>
+                        Category Name
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="name" 
+                           id="categoryName"
+                           value="{{ category.name }}"
+                           placeholder="e.g., Electronics, Beverages, Snacks" 
+                           required
+                           maxlength="100">
+                    <div class="form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Enter a unique category name
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </label>
+                    <textarea class="form-control" 
+                              name="description" 
+                              id="categoryDescription"
+                              placeholder="Enter a brief description of this category (optional)"
+                              maxlength="500">{{ category.description }}</textarea>
+                    <div class="char-counter">
+                        <span id="charCount">{{ category.description|length }}</span> / 500 characters
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'category' %}'">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'sales' %}" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sales</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item active">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'users' %}" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Character counter for description
+        const descriptionField = document.getElementById('categoryDescription');
+        const charCount = document.getElementById('charCount');
+        
+        descriptionField.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Form validation
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            const nameField = document.getElementById('categoryName');
+            if (!nameField.value.trim()) {
+                e.preventDefault();
+                alert('Category name is required!');
+                nameField.focus();
+            }
+        });
+    </script>
+</body>
+</html>

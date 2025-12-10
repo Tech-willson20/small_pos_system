@@ -140,29 +140,6 @@
             border: none;
         }
         
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .form-check-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .forgot-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-        
         .btn-login {
             background: var(--primary-color);
             color: white;
@@ -230,25 +207,11 @@
             padding: 12px;
             margin-bottom: 20px;
         }
-        
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 25px 20px;
-            }
-            
-            .logo-icon {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .logo-icon i {
-                font-size: 2rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="login-container">
+
         <!-- Logo Section -->
         <div class="logo-section">
             <div class="logo-icon">
@@ -259,14 +222,14 @@
                 <p>Point of Sale Management</p>
             </div>
         </div>
-        
+
         <!-- Login Card -->
         <div class="login-card">
             <div class="login-header">
                 <h2>Welcome Back</h2>
                 <p>Login to your account</p>
             </div>
-            
+
             {% if messages %}
                 {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -274,20 +237,20 @@
                 </div>
                 {% endfor %}
             {% endif %}
-            
+
             <form method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
-                
+
                 <div class="form-group">
                     <label class="form-label">
-                        <i class="fas fa-envelope"></i> Email or Phone
+                        <i class="fas fa-user"></i> Username
                     </label>
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
-                        <input type="text" class="form-control" name="username" placeholder="Enter your email or phone" required>
+                        <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-lock"></i> Password
@@ -300,32 +263,22 @@
                         </button>
                     </div>
                 </div>
-                
-                <div class="remember-forgot">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">
-                            Remember me
-                        </label>
-                    </div>
-                    <a href="{% url 'forgot_password' %}" class="forgot-link">Forgot Password?</a>
-                </div>
-                
+
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
             </form>
-            
+
             <div class="divider">
                 <span>OR</span>
             </div>
-            
+
             <div class="signup-link">
                 Don't have an account? <a href="{% url 'signup' %}">Sign Up</a>
             </div>
         </div>
     </div>
-    
+
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
