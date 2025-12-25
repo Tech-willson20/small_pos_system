@@ -1,0 +1,460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Workers - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="{% static 'img/icon.png' %}" type="image/x-icon">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+            --danger-color: #0B6623;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(11, 102, 35, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: #333;
+        }
+        
+        .search-box {
+            margin: 15px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .user-card {
+            background: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(11, 102, 35, 0.2);
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .user-email {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 3px 0 0 0;
+        }
+        
+        .user-username {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0 0 0;
+        }
+        
+        .user-role {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+            background: rgba(11, 102, 35, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .user-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .btn-delete:hover {
+            background: #ffcdd2;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            margin: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state h3 {
+            color: #333;
+            font-size: 1.2rem;
+        }
+        
+        .empty-state p {
+            color: #666;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        .content-wrapper {
+            padding-bottom: 70px;
+        }
+        
+        /* Modal Styles */
+        .modal-content {
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 13px 13px 0 0;
+        }
+        
+        .modal-title {
+            font-weight: bold;
+        }
+        
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-body p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding: 15px 20px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .btn-danger {
+            background: #d32f2f;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        @media (min-width: 768px) {
+            .user-card {
+                margin: 15px auto;
+                max-width: 600px;
+            }
+            
+            .page-header, .search-box {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-users"></i> Manage Workers
+            </a>
+            <button class="btn btn-sm btn-light" onclick="window.location.href='{% url 'dashboard' %}'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Worker Management</h1>
+            <p class="text-muted mb-0">Manage worker accounts</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search workers...">
+        </div>
+
+        <!-- User Cards -->
+        {% if users %}
+            {% for worker in users %}
+                {% if worker.position == 'worker' %}
+                <div class="user-card" data-name="{{ worker.first_name }} {{ worker.last_name }}" data-email="{{ worker.email }}" data-username="{{ worker.username }}">
+                    <div class="user-status">
+                        <span class="status-badge">
+                            Active
+                        </span>
+                    </div>
+                    
+                    <div class="user-header">
+                        <div class="user-avatar">
+                            {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">{{ worker.first_name }} {{ worker.last_name }}</p>
+                            <p class="user-email"><i class="fas fa-envelope"></i> {{ worker.email }}</p>
+                            <p class="user-username"><i class="fas fa-id-badge"></i> {{ worker.username }}</p>
+                            <span class="user-role">
+                                <i class="fas fa-user-tag"></i> Worker
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="user-actions">
+                        <button class="btn-action btn-delete" onclick="confirmDelete('{{ worker.id }}', '{{ worker.first_name }} {{ worker.last_name }}')">
+                            <i class="fas fa-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            
+            <!-- Check if no workers found -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const workerCards = document.querySelectorAll('.user-card');
+                    if (workerCards.length === 0) {
+                        document.querySelector('.content-wrapper').innerHTML += `
+                            <div class="empty-state">
+                                <i class="fas fa-user-slash"></i>
+                                <h3>No Worker Accounts</h3>
+                                <p class="text-muted">There are no worker accounts in the system</p>
+                            </div>
+                        `;
+                    }
+                });
+            </script>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                <h3>No Worker Accounts</h3>
+                <p class="text-muted">There are no worker accounts in the system</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle"></i> Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the account for <strong id="userName"></strong>?</p>
+                    <p class="text-danger"><small><i class="fas fa-info-circle"></i> This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <form id="deleteForm" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'new_sale' %}" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sales</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'profile' %}" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmDelete(userId, userName) {
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('deleteForm').action = `/delete-user/${userId}/`;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.user-card').forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const email = card.getAttribute('data-email').toLowerCase();
+                const username = card.getAttribute('data-username').toLowerCase();
+                
+                if (name.includes(searchTerm) || email.includes(searchTerm) || username.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

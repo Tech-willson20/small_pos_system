@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+import user
+
 # Use Django's AbstractUser so authentication and user fields behave correctly
 class User(AbstractUser):
     POSITION_CHOICES = [
@@ -92,6 +94,8 @@ class Sales(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='cash')
     receipt_method = models.CharField(max_length=20, choices=RECEIPT_CHOICES, default='none')
     sale_date = models.DateTimeField(auto_now_add=True)
+    cashier = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, default=None)
+   
 
     class Meta:
         db_table = 'sales'
@@ -118,11 +122,16 @@ class Sales(models.Model):
         if self.amount_paid:
             return max(0, float(self.amount_paid) - float(self.total_amount))
         return 0.00
+    
+    @property
+    def cashier_name(self):
+        return self.cashier.get_full_name() if self.cashier and self.cashier.get_full_name() else (self.cashier.username if self.cashier else "Unknown")
+
+    
+    
 
     def __str__(self):
         return f"Sale #{self.sales_id} - GH₵{self.total_amount}"
-
-
 class SaleItem(models.Model):
     sale = models.ForeignKey(Sales, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
@@ -148,10 +157,15 @@ class Receipt(models.Model):
     sale = models.OneToOneField(Sales, on_delete=models.CASCADE)
     receipt_number = models.CharField(max_length=50, unique=True)
     issued_at = models.DateTimeField(auto_now_add=True)
+    
+    
+
 
     class Meta:
         db_table = 'receipt'
 
+
+    
     def __str__(self):
         return f"Receipt {self.receipt_number} for Sale {self.sale.sales_id}"
     

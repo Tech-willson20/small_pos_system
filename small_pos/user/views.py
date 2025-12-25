@@ -86,7 +86,7 @@ def signup(request):
             return redirect("signup")
 
     return render(request, "signup.html")
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 def login_view(request):
     if request.method == "POST":
@@ -100,11 +100,14 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
             return redirect("login")
 
-        # Log the user in properly
+        # Log the user in base on role
         login(request, user)
 
         messages.success(request, f"Welcome back, {user.first_name}!")
-        return redirect("dashboard")
+        if user.position == 'worker':
+            return redirect("user_dashboard")
+        else:
+            return redirect("dashboard")
 
     return render(request, "login.html")
 
@@ -152,6 +155,38 @@ def dashboard_view(request):
     return render(request, 'dashboard.html',context)
 
 
+@login_required
+def user_dashboard(request):
+    #account info
+    user=request.user
+    products_list = Product.objects.count()
+    total_categories = Category.objects.count()
+    low_stock_count = Product.objects.filter(stock_level='Low Stock').count()
+    today_sales = Sales.objects.filter(sale_date__date=date.today())
+    receipt = Receipt.objects.filter(sale__cashier=user).select_related('sale').prefetch_related('sale__items__product').order_by('-issued_at')[:3]
+    receipts = Receipt.objects.filter(sale__cashier=user).select_related('sale').order_by('-issued_at')[:5]
+    receipt_count = Receipt.objects.filter(sale__cashier=user).count()
+
+    
+    #give me the total sales amount for today by only user
+    today = date.today()
+    today_sales = Sales.objects.filter(sale_date__date=today, cashier=user)
+    total_sales_amount = sum(sale.total_amount for sale in today_sales)
+    
+
+    context={
+        'total_products':products_list,
+        'total_categories':total_categories,
+        'low_stock_count': low_stock_count,
+        'total_sales_amount': total_sales_amount,
+        'today_sales_count': today_sales.count(),
+        'user':user,
+        'Receipt_count': receipt_count,
+        'receipt': receipt,
+        'receipts': receipts,
+
+    }
+    return render(request, 'user_dashboard.html',context)
 
 @login_required
 def transactions(request):
@@ -413,7 +448,8 @@ def reports_view(request):
     return render(request, 'report.html', context)
 def user_list(request):
     users = User.objects.all()
-    return render(request, 'user_list.html', {'users': users})
+
+    return render(request, 'user_list2.html', {'users': users})
 def settings_view(request):
     return render(request, 'settings.html')
 
@@ -470,6 +506,7 @@ def sales(request):
                 sale.payment_method = payment_method
                 sale.amount_paid = amount_paid
                 sale.receipt_method = receipt_method
+                sale.cashier = request.user
                 sale.save()
             else:
                 # Create new sale
@@ -477,7 +514,8 @@ def sales(request):
                     total_amount=total_amount,
                     payment_method=payment_method,
                     amount_paid=amount_paid,
-                    receipt_method=receipt_method
+                    receipt_method=receipt_method,
+                    cashier=request.user
                 )
             
             # Process each item in cart
@@ -559,8 +597,12 @@ def checkout(request, sale_id=None):
         'users': {'first_name': cashier_name.split()[0] if cashier_name else 'POS'},
     }
     return render(request, 'checkout.html', context)
+
 def logout_view(request):
-    return render(request, 'user/logout.html')
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect("login")
+
 
 def profile_view(request):
     return render(request, 'user/profile.html')

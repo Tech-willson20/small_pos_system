@@ -1,0 +1,522 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="{% static 'img/icon.png' %}" type="image/x-icon">
+    <style>
+        :root {
+            --primary-color: #0B6623;
+            --light-green: #0D8030;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-header {
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .welcome-section h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .welcome-section p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .employee-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn-profile {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 20px;
+            margin-top: -30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(11, 102, 35, 0.1);
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .stat-icon i {
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .quick-actions {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .action-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(11, 102, 35, 0.3);
+        }
+        
+        .action-card.primary {
+            background: var(--primary-color);
+            border: none;
+        }
+        
+        .action-card.primary .action-icon {
+            background: white;
+        }
+        
+        .action-card.primary .action-icon i {
+            color: var(--primary-color);
+        }
+        
+        .action-card.primary .action-label {
+            color: white;
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-icon {
+            background: white;
+        }
+        
+        .action-icon i {
+            font-size: 1.6rem;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-icon i {
+            color: var(--primary-color);
+        }
+        
+        .action-label {
+            color: var(--primary-color);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover .action-label {
+            color: white;
+        }
+        
+        .recent-section {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .transaction-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .transaction-id {
+            color: #1f2937;
+        }
+        
+        .transaction-time {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .transaction-body {
+            margin-bottom: 10px;
+        }
+        
+        .transaction-customer {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+        
+        .transaction-items {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        .transaction-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        .view-all-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px 0;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--light-green);
+            color: white;
+        }
+        
+        .info-banner {
+            margin: 0 20px 20px 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+        }
+        
+        .info-banner i {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+        
+        .info-banner p {
+            margin: 0;
+            color: #2e7d32;
+            font-size: 0.9rem;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            flex: 1;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+        
+        .content-wrapper {
+            padding-bottom: 70px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .content-wrapper {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-content">
+            <div class="welcome-section">
+                <h2>👋 Hello, {{ user.first_name|default:"Employee" }}</h2>
+                <p>{{ current_date|date:"l, F d, Y" }}</p>
+                <span class="employee-badge">
+                    <i class="fas fa-id-badge"></i> Employee
+                </span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-profile" onclick="window.location.href='{% url 'profile' %}'">
+                    <i class="fas fa-user"></i>
+                </button>
+                <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-profile" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Quick Stats (Limited for Employees) -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-label">My Transactions Today</div>
+                <div class="stat-value">  GH₵ {{ total_sales_amount|default:"0" }}</div>
+                <div class="stat-change">
+                    <i class="fas fa-receipt"> {{ today_sales_count|default:"0" }}</i> Your Daily Sales count  
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-label">Products Available</div>
+                <div class="stat-value">{{ total_products|default:"0" }}</div>
+                <div class="stat-change">
+                    <i class="fas fa-box-open"></i> Items in stock
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <p><strong>Employee Access:</strong> You have access to make sales and view inventory. Contact your manager for additional permissions.</p>
+        </div>
+
+        <!-- Quick Actions (Limited for Employees) -->
+        <div class="quick-actions">
+            <h3 class="section-title">Quick Actions</h3>
+            <div class="action-grid">
+                <a href="{% url 'new_sale' %}" class="action-card primary">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="action-label">New Sale</div>
+                </a>
+                
+                <a href="{% url 'inventory' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="action-label">View Inventory</div>
+                </a>
+                
+                <a href="{% url 'transactions' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="action-label">My Sales</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Transactions (Employee's own transactions) -->
+        <div class="recent-section">
+            <h3 class="section-title">My Recent Sales</h3>
+
+            {% if receipt %}
+                {% for sale in receipt|slice:":3" %}
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <span class="transaction-id">#{{ sale.receipt_number }}</span>
+                            <span class="transaction-time">{{ sale.issued_at|date:"M d, Y H:i" }}</span>
+                        </div>
+
+                        <div class="transaction-body">
+                            <div class="transaction-items">
+                                {% for item in sale.sale.items.all %}
+                                    <span class="item">
+                                        {{ item.quantity }} × {{ item.product.name }}
+                                        {% if not forloop.last %}, {% endif %}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="transaction-footer">
+                            <span class="transaction-amount">GH₵ {{ sale.sale.total_amount|default:"0.00" }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <a href="{% url 'transactions' %}" class="view-all-btn">View All My Sales</a>
+
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <p>No sales recorded yet today.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Start by creating your first sale!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bottom Navigation (Simplified) -->
+    <div class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'new_sale' %}" class="nav-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>New Sale</span>
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="fas fa-boxes"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="{% url 'profile' %}" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
