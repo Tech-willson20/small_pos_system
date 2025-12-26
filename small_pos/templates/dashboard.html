@@ -484,7 +484,7 @@
                 <p>{{ current_date|date:"l, F d, Y" }}</p>
             </div>
             <div class="header-actions">
-                <button class="btn-notification">
+                <button class="btn-notification" onclick="window.location.href='{% url 'activity_log' %}'">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge">{{ notification_count|default:"3" }}</span>
                 </button>

@@ -37,4 +37,6 @@ urlpatterns = [
     path('categories/delete/<int:category_id>/', views.delete_category, name='delete_category'),
     path('categories/<int:category_id>/products/', views.view_category_products, name='view_category_products'),
 
+    #LOGS
+    path('activity-log/', views.activity_log, name='activity_log'),
 ]

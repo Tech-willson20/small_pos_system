@@ -173,3 +173,38 @@ class Receipt(models.Model):
         if not self.receipt_number:
             self.receipt_number = f"REC-{self.sale.sales_id:06d}"
         super().save(*args, **kwargs)
+
+
+class ActivityLog(models.Model):
+    ACTION_CHOICES = [
+        ('sale', 'Sale Made'),
+        ('product_add', 'Product Added'),
+        ('product_update', 'Product Updated'),
+        ('product_delete', 'Product Deleted'),
+        ('stock_update', 'Stock Updated'),
+        ('user_login', 'User Login'),
+        ('user_logout', 'User Logout'),
+        ('user_register', 'User Registered'),
+        ('category_add', 'Category Added'),
+        ('category_update', 'Category Updated'),
+        ('category_delete', 'Category Deleted'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    related_object = models.CharField(max_length=200, blank=True)
+    
+    class Meta:
+        db_table = 'activity_log'
+        verbose_name = 'Activity Log'
+        verbose_name_plural = 'Activity Logs'
+        ordering = ['-timestamp']
+    
+    def __str__(self):
+        return f"{self.get_action_display()} - {self.timestamp}"
+
+
+

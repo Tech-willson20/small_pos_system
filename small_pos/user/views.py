@@ -7,7 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
-from user.models import User, Category, Product, Sales, SaleItem, Receipt
+from user.models import User, Category, Product, Sales, SaleItem, Receipt, ActivityLog
 
 
 # Create your views here.
@@ -313,6 +313,7 @@ def restock_product(request, product_id):
                 messages.error(request, 'Invalid stock quantity.')
                 return redirect('inventory')
             
+            old_stock = product.stock
             product.stock += additional_stock
             
             # Update stock level
@@ -324,6 +325,15 @@ def restock_product(request, product_id):
                 product.stock_level = 'In Stock'
             
             product.save()
+            
+            # Log the activity
+            ActivityLog.objects.create(
+                user=request.user,
+                action='stock_update',
+                description=f'Restocked product "{product.name}". Old Stock: {old_stock}, New Stock: {product.stock}, Added: {additional_stock}',
+                related_object=f'Product ID: {product.id}'
+            )
+            
             messages.success(request, f'Product "{product.name}" restocked successfully!')
             return redirect('inventory')
         except ValueError:
@@ -728,6 +738,16 @@ def edit_product(request, product_id):
                     'categories': categories
                 })
             
+            # Store old values for logging
+            old_values = {
+                'name': product.name,
+                'category': product.category.name if product.category else '',
+                'price': str(product.price),
+                'stock': product.stock,
+                'min_stock': product.min_stock,
+                'sku': product.sku,
+            }
+            
             # Update product
             category = Category.objects.get(id=category_id)
             product.name = name
@@ -739,6 +759,29 @@ def edit_product(request, product_id):
             product.min_stock = min_stock
             product.sku = sku
             product.save()
+            
+            # Build change log
+            changes = []
+            if old_values['name'] != name:
+                changes.append(f"Name: {old_values['name']} → {name}")
+            if old_values['category'] != category.name:
+                changes.append(f"Category: {old_values['category']} → {category.name}")
+            if old_values['price'] != str(price):
+                changes.append(f"Price: GH₵{old_values['price']} → GH₵{price}")
+            if old_values['stock'] != int(stock):
+                changes.append(f"Stock: {old_values['stock']} → {stock}")
+            if old_values['min_stock'] != int(min_stock):
+                changes.append(f"Min Stock: {old_values['min_stock']} → {min_stock}")
+            if old_values['sku'] != sku:
+                changes.append(f"SKU: {old_values['sku']} → {sku}")
+            
+            # Log the activity
+            ActivityLog.objects.create(
+                user=request.user,
+                action='product_update',
+                description=f'Edited product "{product.name}". Changes: {", ".join(changes) if changes else "No changes"}',
+                related_object=f'Product ID: {product.id}'
+            )
             
             messages.success(request, f'Product "{product.name}" updated successfully!')
             return redirect('inventory')
@@ -897,3 +940,91 @@ def view_category_products(request, category_id):
     }
     
     return render(request, 'category/category_products.html', context)
+
+
+
+
+#LOGS
+def activity_log(request):
+    """View to display activity logs"""
+    from django.db import models
+    
+    # Check if user wants to view all logs
+    view_all = request.GET.get('view_all', 'false') == 'true'
+    
+    # Fetch activity logs ordered by most recent first
+    all_activity_logs = ActivityLog.objects.all().order_by('-timestamp')
+    
+    # Filter functionality
+    action_filter = request.GET.get('action', '')
+    user_filter = request.GET.get('user', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    search_query = request.GET.get('search', '')
+    
+    # Apply filters
+    if action_filter:
+        all_activity_logs = all_activity_logs.filter(action=action_filter)
+    
+    if user_filter:
+        all_activity_logs = all_activity_logs.filter(user__id=user_filter)
+    
+    if date_from:
+        all_activity_logs = all_activity_logs.filter(timestamp__date__gte=date_from)
+    
+    if date_to:
+        all_activity_logs = all_activity_logs.filter(timestamp__date__lte=date_to)
+    
+    if search_query:
+        all_activity_logs = all_activity_logs.filter(
+            models.Q(description__icontains=search_query) |
+            models.Q(user__username__icontains=search_query) |
+            models.Q(related_object__icontains=search_query)
+        )
+    
+    # Determine if showing all or recent 5
+    if view_all:
+        # Show all with pagination (20 items per page)
+        paginator = Paginator(all_activity_logs, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        activity_logs = page_obj
+        is_view_all = True
+    else:
+        # Show only recent 5
+        activity_logs = all_activity_logs[:5]
+        page_obj = None
+        is_view_all = False
+    
+    # Get all users for filter dropdown
+    all_users = User.objects.all().order_by('username')
+    
+    # Get all action types for filter dropdown
+    action_choices = ActivityLog.ACTION_CHOICES
+    
+    # Calculate stats
+    from django.utils import timezone
+    today = timezone.now().date()
+    week_ago = today - timedelta(days=7)
+    
+    stats = {
+        'total_activities': ActivityLog.objects.count(),
+        'today_activities': ActivityLog.objects.filter(timestamp__date=today).count(),
+        'this_week_activities': ActivityLog.objects.filter(timestamp__date__gte=week_ago).count(),
+    }
+    
+    context = {
+        'page_obj': page_obj if is_view_all else None,
+        'activity_logs': activity_logs,
+        'total_activities': all_activity_logs.count(),
+        'all_users': all_users,
+        'action_choices': action_choices,
+        'action_filter': action_filter,
+        'user_filter': user_filter,
+        'date_from': date_from,
+        'date_to': date_to,
+        'search_query': search_query,
+        'is_view_all': is_view_all,
+        'stats': stats,
+    }
+    return render(request, 'activity_log.html', context)
