@@ -273,10 +273,10 @@
         </div>
         
         
-
+</div>    </div>
     <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="{% url 'dashboard' %}" class="nav-item">
+<div class="bottom-nav">
+        <a href="{% if user.position == 'worker' %}{% url 'user_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="nav-item">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
